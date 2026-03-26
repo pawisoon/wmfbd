@@ -1,25 +1,21 @@
-/**
- * Pure SVG radial gauge — no charting library needed.
- */
-export function DelayGauge({ delayChance }) {
-  const color = delayChance < 30 ? '#22c55e' : delayChance < 60 ? '#f59e0b' : '#ef4444'
-  const label = delayChance < 30 ? 'Looking good' : delayChance < 60 ? 'Moderate risk' : 'High risk'
+import { useLocale } from '../i18n/LocaleContext'
 
-  // Arc geometry
+export function DelayGauge({ delayChance }) {
+  const { t } = useLocale()
+  const color = delayChance < 30 ? '#22c55e' : delayChance < 60 ? '#f59e0b' : '#ef4444'
+  const label = delayChance < 30 ? t('lookingGood') : delayChance < 60 ? t('moderateRisk') : t('highRisk')
+
   const size = 200
   const cx = size / 2
   const cy = size / 2
   const r = 78
   const strokeWidth = 12
-  const startAngle = 225  // degrees, clockwise from 3-o'clock
-  const sweepAngle = 270  // total arc span
+  const startAngle = 225
+  const sweepAngle = 270
 
   function polarToCartesian(angle) {
     const rad = ((angle - 90) * Math.PI) / 180
-    return {
-      x: cx + r * Math.cos(rad),
-      y: cy + r * Math.sin(rad),
-    }
+    return { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) }
   }
 
   function arcPath(from, to) {
@@ -36,7 +32,6 @@ export function DelayGauge({ delayChance }) {
     <div className="flex flex-col items-center gap-1">
       <div className="relative" style={{ width: size, height: size }}>
         <svg width={size} height={size} className="overflow-visible">
-          {/* Track */}
           <path
             d={arcPath(startAngle, trackEnd)}
             fill="none"
@@ -44,7 +39,6 @@ export function DelayGauge({ delayChance }) {
             strokeWidth={strokeWidth}
             strokeLinecap="round"
           />
-          {/* Value arc */}
           {delayChance > 0 && (
             <path
               d={arcPath(startAngle, valueEnd)}
@@ -56,18 +50,15 @@ export function DelayGauge({ delayChance }) {
             />
           )}
         </svg>
-
-        {/* Center text */}
         <div className="absolute inset-0 flex flex-col items-center justify-center">
           <span className="text-5xl font-bold tracking-tight" style={{ color }}>
             {delayChance}%
           </span>
           <span className="text-xs text-gray-500 mt-1 uppercase tracking-widest font-medium">
-            delay chance
+            {t('delayChance')}
           </span>
         </div>
       </div>
-
       <span className="text-sm font-medium" style={{ color }}>{label}</span>
     </div>
   )

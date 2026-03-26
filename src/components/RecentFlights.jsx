@@ -1,15 +1,18 @@
+import { useLocale } from '../i18n/LocaleContext'
+
 export function RecentFlights({ flights, onSelect, onClear }) {
+  const { t } = useLocale()
   if (!flights.length) return null
 
   return (
     <div className="w-full max-w-xl mx-auto mt-4">
       <div className="flex items-center justify-between mb-2 px-0.5">
-        <span className="text-xs text-gray-600 uppercase tracking-wider font-medium">Recent</span>
+        <span className="text-xs text-gray-600 uppercase tracking-wider font-medium">{t('recent')}</span>
         <button
           onClick={onClear}
           className="text-xs text-gray-600 hover:text-gray-400 transition-colors"
         >
-          Clear all
+          {t('clearAll')}
         </button>
       </div>
 

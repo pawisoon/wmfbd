@@ -1,24 +1,25 @@
-/**
- * Horizontal bar breakdown of delay buckets.
- */
+import { useLocale } from '../i18n/LocaleContext'
+
 export function DelayBreakdown({ stats }) {
+  const { t } = useLocale()
+
   const rows = [
-    { label: 'On time', sublabel: '≤5 min', value: stats.onTime, color: '#22c55e' },
-    { label: 'Minor delay', sublabel: '6–30 min', value: stats.minor, color: '#f59e0b' },
-    { label: 'Moderate', sublabel: '31–60 min', value: stats.moderate, color: '#f97316' },
-    { label: 'Severe', sublabel: '>60 min', value: stats.severe, color: '#ef4444' },
+    { labelKey: 'onTime',      sublabel: '≤5 min',    value: stats.onTime,    color: '#22c55e' },
+    { labelKey: 'minorDelay',  sublabel: '6–30 min',  value: stats.minor,     color: '#f59e0b' },
+    { labelKey: 'moderate',    sublabel: '31–60 min', value: stats.moderate,  color: '#f97316' },
+    { labelKey: 'severe',      sublabel: '>60 min',   value: stats.severe,    color: '#ef4444' },
     ...(stats.cancelled > 0
-      ? [{ label: 'Cancelled', sublabel: '', value: stats.cancelled, color: '#6b7280' }]
+      ? [{ labelKey: 'cancelled', sublabel: '', value: stats.cancelled, color: '#6b7280' }]
       : []),
   ]
 
   return (
     <div className="space-y-3 w-full">
       {rows.map(row => (
-        <BreakdownRow key={row.label} {...row} />
+        <BreakdownRow key={row.labelKey} label={t(row.labelKey)} sublabel={row.sublabel} value={row.value} color={row.color} />
       ))}
       <p className="text-xs text-gray-600 text-right pt-1">
-        Based on {stats.total} flights · last 90 days
+        {t('basedOn')} {stats.total} {t('flights')} · {t('last90')}
       </p>
     </div>
   )

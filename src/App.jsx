@@ -1,16 +1,27 @@
 import { useState } from 'react'
+import { LocaleProvider, useLocale } from './i18n/LocaleContext'
 import { FlightSearch } from './components/FlightSearch'
 import { RecentFlights } from './components/RecentFlights'
 import { DelayGauge } from './components/DelayGauge'
 import { DelayBreakdown } from './components/DelayBreakdown'
 import { LiveStatus } from './components/LiveStatus'
 import { LoadingSkeleton } from './components/LoadingSkeleton'
+import { LanguagePicker } from './components/LanguagePicker'
 import { useFlightHistory } from './hooks/useFlightHistory'
 import { getRecentFlights, addRecentFlight, clearRecentFlights } from './utils/recentFlights'
 
+export default function App() {
+  return (
+    <LocaleProvider>
+      <Inner />
+    </LocaleProvider>
+  )
+}
+
 const HAS_API_KEY = Boolean(import.meta.env.VITE_AERODATABOX_KEY)
 
-export default function App() {
+function Inner() {
+  const { t } = useLocale()
   const [selectedFlight, setSelectedFlight] = useState(null)
   const [recents, setRecents] = useState(getRecentFlights)
 
@@ -40,20 +51,24 @@ export default function App() {
   return (
     <div className="min-h-screen flex flex-col items-center px-4 py-12 sm:py-20">
       {/* Header */}
-      <header className="text-center mb-10">
+      <header className="text-center mb-10 w-full max-w-xl">
+        <div className="flex justify-end mb-4">
+          <LanguagePicker />
+        </div>
         <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-white">
-          Will my flight be delayed?
+          {t('title')}
         </h1>
-        <p className="mt-2 text-gray-500 text-sm">
-          Historical delay odds based on the last 90 days
-        </p>
+        <p className="mt-2 text-gray-500 text-sm">{t('subtitle')}</p>
       </header>
 
       {/* API key warning */}
       {!HAS_API_KEY && (
         <div className="mb-6 w-full max-w-xl px-4 py-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-300 text-xs text-center">
-          ⚠️ No <code className="font-mono bg-white/10 px-1 rounded">VITE_AERODATABOX_KEY</code> set.
-          Add your <a href="https://rapidapi.com/aedbx-aedbx/api/aerodatabox" target="_blank" rel="noopener noreferrer" className="underline hover:text-amber-200">RapidAPI AeroDataBox</a> key to <code className="font-mono bg-white/10 px-1 rounded">.env.local</code>.
+          ⚠️ {t('noApiKey')}{' '}
+          <a href="https://rapidapi.com/aedbx-aedbx/api/aerodatabox" target="_blank" rel="noopener noreferrer" className="underline hover:text-amber-200">
+            {t('noApiKeyLink')}
+          </a>{' '}
+          {t('noApiKeySuffix')}
         </div>
       )}
 
@@ -77,7 +92,7 @@ export default function App() {
         <div className="glass p-6 w-full max-w-xl mx-auto text-center space-y-3">
           <p className="text-red-400 text-sm">{error}</p>
           <button onClick={handleReset} className="text-gray-400 hover:text-white text-sm underline">
-            Search again
+            {t('searchAgain')}
           </button>
         </div>
       )}
@@ -86,11 +101,9 @@ export default function App() {
       {selectedFlight && !loading && !error && !stats && (
         <div className="glass p-8 w-full max-w-xl mx-auto text-center space-y-3">
           <RouteHeader flight={selectedFlight} />
-          <p className="text-gray-500 text-sm mt-4">
-            Not enough historical data to compute delay odds for this flight.
-          </p>
+          <p className="text-gray-500 text-sm mt-4">{t('noData')}</p>
           <button onClick={handleReset} className="text-brand-400 hover:text-brand-300 text-sm underline">
-            Try another flight
+            {t('tryAnother')}
           </button>
         </div>
       )}
@@ -105,7 +118,7 @@ export default function App() {
               onClick={handleReset}
               className="text-xs text-gray-600 hover:text-gray-400 transition-colors"
             >
-              ← Change
+              {t('changeLink')}
             </button>
           </div>
 
@@ -121,32 +134,39 @@ export default function App() {
           {fromCache && cachedAt && (
             <div className="flex items-center justify-between text-xs">
               <span className="text-gray-600">
-                Cached · {timeAgo(cachedAt)}
+                {t('cached')} · {timeAgo(cachedAt)}
               </span>
               <button
                 onClick={refresh}
                 className="text-brand-400 hover:text-brand-300 transition-colors"
               >
-                Refresh
+                {t('refresh')}
               </button>
             </div>
           )}
 
           {/* Live status */}
           <div className="pt-2 border-t border-white/8 flex items-center justify-between">
-            <span className="text-xs text-gray-600 uppercase tracking-wider font-medium">Live</span>
-            <LiveStatus
-              flightNumber={flightNumber}
-              departureIata={originIata}
-            />
+            <span className="text-xs text-gray-600 uppercase tracking-wider font-medium">{t('live')}</span>
+            <LiveStatus flightNumber={flightNumber} departureIata={originIata} />
           </div>
         </div>
       )}
 
       {/* Footer */}
-      <footer className="mt-auto pt-16 text-gray-700 text-xs text-center space-y-1">
-        <p>Data: AeroDataBox · OpenSky Network</p>
-        <p>Live positions refresh every 30s</p>
+      <footer className="mt-auto pt-16 text-gray-700 text-xs text-center space-y-2">
+        <p>{t('dataSource')}</p>
+        <p>{t('liveRefresh')}</p>
+        <a
+          href="https://buymeacoffee.com/pawisoon"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-1.5 mt-1 px-3 py-1.5 rounded-lg
+                     bg-yellow-500/10 border border-yellow-500/20 text-yellow-400
+                     hover:bg-yellow-500/20 transition-colors text-xs font-medium"
+        >
+          ☕ {t('donate')}
+        </a>
       </footer>
     </div>
   )

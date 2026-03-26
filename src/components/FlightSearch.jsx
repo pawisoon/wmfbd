@@ -1,7 +1,9 @@
 import { useState, useRef } from 'react'
 import { searchFlights } from '../services/aeroDataBox'
+import { useLocale } from '../i18n/LocaleContext'
 
 export function FlightSearch({ onSelect }) {
+  const { t } = useLocale()
   const [query, setQuery] = useState('')
   const [results, setResults] = useState([])
   const [loading, setLoading] = useState(false)
@@ -47,7 +49,7 @@ export function FlightSearch({ onSelect }) {
             type="text"
             value={query}
             onChange={e => setQuery(e.target.value.toUpperCase())}
-            placeholder="Flight number — e.g. AA123"
+            placeholder={t('searchPlaceholder')}
             className="w-full pl-10 pr-4 py-3.5 bg-white/8 border border-white/15 rounded-xl
                        text-white placeholder-gray-500 text-sm font-medium tracking-wide
                        focus:outline-none focus:border-brand-500 focus:bg-white/10
@@ -63,7 +65,7 @@ export function FlightSearch({ onSelect }) {
                      rounded-xl text-white text-sm font-semibold transition-colors
                      disabled:cursor-not-allowed"
         >
-          {loading ? <Spinner /> : 'Search'}
+          {loading ? <Spinner /> : t('searchButton')}
         </button>
       </form>
 
@@ -73,7 +75,7 @@ export function FlightSearch({ onSelect }) {
 
       {searched && results.length === 0 && !error && (
         <p className="mt-3 text-gray-400 text-sm text-center">
-          No flights found for <span className="text-white font-medium">{query}</span>
+          {t('noFlightsFound')} <span className="text-white font-medium">{query}</span>
         </p>
       )}
 
