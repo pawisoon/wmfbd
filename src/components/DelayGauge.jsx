@@ -54,7 +54,7 @@ export function DelayGauge({ delayChance }) {
           <span className="text-5xl font-bold tracking-tight" style={{ color }}>
             {delayChance}%
           </span>
-          <span className="text-xs text-gray-500 mt-1 uppercase tracking-widest font-medium">
+          <span className="text-[10px] text-gray-500 mt-1 uppercase tracking-wide font-medium whitespace-nowrap">
             {t('delayChance')}
           </span>
         </div>

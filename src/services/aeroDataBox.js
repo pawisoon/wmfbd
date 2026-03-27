@@ -172,10 +172,11 @@ export function aggregateDelays(flights) {
   if (total === 0) return null
 
   const pct = key => Math.round((buckets[key] / total) * 100)
+  const delayedTotal = buckets.minor + buckets.moderate + buckets.severe + buckets.cancelled
 
   return {
     total,
-    delayChance: 100 - pct('onTime'),
+    delayChance: Math.round((delayedTotal / total) * 100),
     onTime: pct('onTime'),
     minor: pct('minor'),       // 1–30 min
     moderate: pct('moderate'), // 31–60 min

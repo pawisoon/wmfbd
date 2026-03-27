@@ -22,6 +22,27 @@ VITE_AERODATABOX_KEY=your_rapidapi_key_here
 
 The OpenSky API is public and requires no key.
 
+## Tech Stack
+
+| Layer | Technology | Version |
+|---|---|---|
+| UI framework | React + React DOM | ^18.3.1 |
+| Build tool | Vite + @vitejs/plugin-react | ^5.4.10 / ^4.3.1 |
+| Styling | Tailwind CSS | ^3.4.14 |
+| CSS processing | PostCSS + Autoprefixer | ^8.4.47 / ^10.4.20 |
+| Class utility | clsx | ^2.1.1 |
+| Font | Inter (Google Fonts, weights 300–700) | — |
+| Module format | ES Modules (`"type": "module"`) | — |
+
+**State & data:**
+- React Context API — `LocaleContext` for i18n
+- Custom hooks: `useFlightHistory`, `useLiveStatus`
+- `localStorage` — caches recent flight lookups and 90-day history
+
+**i18n:** Multi-language support in `src/i18n/`
+
+**Config files:** `vite.config.js`, `tailwind.config.js` (custom brand colors), `postcss.config.js`
+
 ## Architecture
 
 React 18 SPA built with Vite + Tailwind CSS (dark mode via `class` strategy, `dark` class set on `<html>`).

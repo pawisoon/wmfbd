@@ -14,10 +14,15 @@ export function DelayBreakdown({ stats }) {
   ]
 
   return (
-    <div className="space-y-3 w-full">
-      {rows.map(row => (
-        <BreakdownRow key={row.labelKey} label={t(row.labelKey)} sublabel={row.sublabel} value={row.value} color={row.color} />
-      ))}
+    <div className="w-full">
+      <div
+        className="items-center gap-x-3 gap-y-3"
+        style={{ display: 'grid', gridTemplateColumns: 'max-content 1fr 2.5rem' }}
+      >
+        {rows.map(row => (
+          <BreakdownRow key={row.labelKey} label={t(row.labelKey)} sublabel={row.sublabel} value={row.value} color={row.color} />
+        ))}
+      </div>
       <p className="text-xs text-gray-600 text-right pt-1">
         {t('basedOn')} {stats.total} {t('flights')} · {t('last90')}
       </p>
@@ -27,20 +32,20 @@ export function DelayBreakdown({ stats }) {
 
 function BreakdownRow({ label, sublabel, value, color }) {
   return (
-    <div className="flex items-center gap-3">
-      <div className="w-28 shrink-0">
+    <>
+      <div className="whitespace-nowrap">
         <span className="text-sm text-gray-300">{label}</span>
         {sublabel && <span className="text-xs text-gray-600 ml-1.5">{sublabel}</span>}
       </div>
-      <div className="flex-1 h-2 bg-white/8 rounded-full overflow-hidden">
+      <div className="h-2 bg-white/8 rounded-full overflow-hidden flex justify-end">
         <div
           className="h-full rounded-full transition-all duration-700"
           style={{ width: `${value}%`, backgroundColor: color }}
         />
       </div>
-      <span className="text-sm font-semibold w-10 text-right" style={{ color }}>
+      <span className="text-sm font-semibold text-right" style={{ color }}>
         {value}%
       </span>
-    </div>
+    </>
   )
 }
